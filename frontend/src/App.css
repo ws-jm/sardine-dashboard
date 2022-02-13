@@ -1,0 +1,26 @@
+.App {
+  text-align: center;
+}
+.MuiTable-root {
+  width: max-content !important;
+}
+.btn-group > .btn:focus,
+.btn-group > .btn:active,
+.btn-group > .btn.active,
+.btn-group-vertical > .btn:focus,
+.btn-group-vertical > .btn:active,
+.btn-group-vertical > .btn.active {
+  z-index: 0 !important;
+}
+.MuiTableRow-root > th {
+  z-index: 0 !important;
+}
+.MuiTableCell-alignLeft {
+  width: max-content !important;
+  max-width: 320px !important;
+  line-break: anywhere !important;
+}
+.dropdown-menu.show {
+  max-height: 350px !important;
+  overflow-y: scroll !important;
+}

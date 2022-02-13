@@ -1,0 +1,4 @@
+DB_USER=sardineadmin
+DB_NAME=sardinedb
+PORT=5432
+HOST=localhost

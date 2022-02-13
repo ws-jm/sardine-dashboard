@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": false,
+    "esModuleInterop": true,
+    "downlevelIteration": true,
+    "lib": ["esnext"],
+    "module": "commonjs",
+    "noUnusedLocals": true,
+    "outDir": "dist",
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "esnext",
+    "baseUrl": ".",
+    "paths": {
+      "sardine-dashboard-typescript-definitions": ["../shared/index.ts"]
+    }
+  },
+  "compileOnSave": true,
+  "include": ["src"]
+}

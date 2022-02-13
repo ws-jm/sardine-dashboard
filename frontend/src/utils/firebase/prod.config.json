@@ -1,0 +1,10 @@
+{
+  "apiKey": "AIzaSyC0zklGhoIRwOi9ddMN3qOjLc7guETeKTU",
+  "authDomain": "prod-sardine-ai.firebaseapp.com",
+  "projectId": "prod-sardine-ai",
+  "databaseURL": "https://prod-sardine-ai.firebaseio.com",
+  "storageBucket": "prod-sardine-ai.appspot.com",
+  "messagingSenderId": "532505674316",
+  "appId": "1:532505674316:web:77569dc3e9cfc7041c6ae9",
+  "measurementId": "G-3KWGM74752"
+}

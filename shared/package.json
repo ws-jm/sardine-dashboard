@@ -1,0 +1,17 @@
+{
+  "name": "sardine-dashboard-typescript-definitions",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "npx tsc"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^4.4.4"
+  },
+  "dependencies": {
+    "dayjs": "^1.10.7"
+  }
+}

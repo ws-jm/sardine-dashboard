@@ -1,0 +1,27 @@
+{
+  "name": "device-dashboard",
+  "private": true,
+  "description": "Codebase for sardine's device intelligence dashboard",
+  "scripts": {
+    "format": "prettier --write \"*.{yaml,yml,md}\" \"shared/*.ts\" \"frontend/**/*.{ts,tsx,js,css,scss,html,json}\" \"server/**/*.{ts,js,json}\" --loglevel=warn",
+    "prepare": "husky install",
+    "pre-commit": "lint-staged"
+  },
+  "devDependencies": {
+    "husky": "^7.0.2",
+    "lint-staged": "^11.1.2"
+  },
+  "dependencies": {
+    "concurrently": "^6.2.1",
+    "prettier": "^2.3.2"
+  },
+  "lint-staged": {
+    "*.{js,ts,tsx,css,scss,yaml,yml,json,html,md}": [
+      "prettier --write"
+    ]
+  },
+  "volta": {
+    "node": "16.0.0",
+    "npm": "7.0.0"
+  }
+}

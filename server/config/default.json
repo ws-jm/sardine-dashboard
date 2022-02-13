@@ -1,0 +1,18 @@
+{
+  "SERVER_PORT": 4001,
+  "DB_CONNECTION_STRING": "postgres://sardineadmin:Yn(Y)Q7mWZC4}>qC@localhost:5432/sardinedb",
+  "BUSINESS_DB_CONNECTION_STRING": "postgres://postgres:docker@localhost:5432/business",
+  "SERVER_HOST": "0.0.0.0",
+  "FRONTEND_SERVER_HOST": "0.0.0.0",
+  "SESSION_COOKIE_SECURE": false,
+  "SESSION_COOKIE_SAME_SITE": "lax",
+  "FRONTEND_URL": "http://localhost:4000",
+  "AUTH_SERVICE_ENDPOINT": "http://localhost:7070",
+  "RULE_ENGINE_ENDPOINT": "http://localhost:7071",
+  "METABASE_SITE_URL": "https://dev.metabase.sardine.biz",
+  "METABASE_DASHBOARD_ID": 2,
+  "INVITE_EMAIL_LOGO": "https://storage.googleapis.com/invite_email_images/logo.png",
+  "INVITE_EMAIL_BANNER": "https://storage.googleapis.com/invite_email_images/banner.png",
+  "UNLEASH_SERVICE_ENDPOINT": "https://eu.app.unleash-hosted.com/eubb1024/api/",
+  "SARDINE_API_ENDPOINT": "https://api.dev.sardine.ai"
+}

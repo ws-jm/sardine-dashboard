@@ -1,0 +1,10 @@
+node_modules
+
+# server's build folder
+dist 
+
+# frontend's build folderr
+build
+
+# embed distributed libs
+*/*.min.js

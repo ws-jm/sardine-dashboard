@@ -1,0 +1,23 @@
+// change the theme
+:root {
+  --dark-14: #142137;
+  --danger: #fd6871;
+}
+
+$theme-colors: (
+  "dark": #001932,
+  "primary": #325078,
+  "blue": #2173ff,
+  "secondry": #b9c5e0,
+  "danger": #fd6871,
+  "light": #f5f5f5,
+  "success": #07b82e,
+  "info": #2dc2eb,
+);
+
+// Import Bootstrap and its default variables
+@import "bootstrap/scss/bootstrap.scss";
+
+.font-weight-bold {
+  font-weight: bold;
+}

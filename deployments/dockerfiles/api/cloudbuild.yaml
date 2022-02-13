@@ -1,0 +1,33 @@
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args: [
+        "build",
+        "--build-arg=VITE_APP_SARDINE_ENV=${_SARDINE_ENV}",
+        "--build-arg=VITE_APP_FRONTEND_HOST=${_SARDINE_HOST}",
+        "--build-arg=NODE_OPTIONS=--max_old_space_size=7500", # To prevent the "JavaScript heap out of memory" error in `vite build`
+        "-t",
+        "gcr.io/$PROJECT_ID/dashboard:$SHORT_SHA",
+        "-f",
+        "deployments/dockerfiles/api/Dockerfile",
+        ".",
+      ]
+  - name: gcr.io/cloud-builders/docker
+    args: ["tag", "gcr.io/$PROJECT_ID/dashboard:$SHORT_SHA", "gcr.io/$PROJECT_ID/dashboard:latest"]
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["push", "gcr.io/$PROJECT_ID/dashboard"]
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: gcloud
+    args:
+      - "run"
+      - "services"
+      - "update"
+      - "dashboard"
+      - "--image"
+      - "gcr.io/$PROJECT_ID/dashboard:latest"
+      - "--region"
+      - "us-central1"
+      - "--platform"
+      - "managed"
+timeout: 3000s
+options:
+  machineType: "N1_HIGHCPU_8"

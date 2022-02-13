@@ -1,0 +1,147 @@
+name: TS Checks
+
+on:
+  push:
+    paths:
+      - frontend/**
+      - server/**
+      - .github/workflows/**
+    branches: [master]
+  pull_request:
+    branches: [master]
+  # For Dependabot. Dependabot cannot access ENV varibles in steps triggered by pull_request events.
+  # To run check for Dependabot, we use pull_request_target events.
+  # pull_request_target is very similar to pull_request but ENV variables are accessible.
+  # Also, it runs against the forked repo, not against the original, if forked.
+  # pull_request_target was introduced to solve the security problem problem https://github.blog/2020-08-03-github-actions-improvements-for-fork-and-pull-request-workflows/
+  # Article: https://securitylab.github.com/research/github-actions-preventing-pwn-requests/
+  # Official document: https://docs.github.com/en/actions/learn-github-actions/events-that-trigger-workflows#pull_request_target
+  pull_request_target:
+    branches: [master]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    # Only Dependabot can run pull_request_target steps. Dependabot cannot run pull_request steps
+    # Non-dependabot can pull_request but cannot run pull_request_target
+    if: |
+      (github.event_name == 'pull_request_target' && github.actor == 'dependabot[bot]') ||
+      (github.event_name != 'pull_request_target' && github.actor != 'dependabot[bot]')
+    name: build
+    # Redis service is for testing server after building.
+    services:
+      redis:
+        image: redis
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout pull_request (Dependabot should not run this step)
+        uses: sardine-ai/checkout@v2
+        if: ${{ github.event_name != 'pull_request_target' }}
+      - name: Checkout pull_request_target (Dependabot can run this step. Other actors including humans should not run this)
+        uses: sardine-ai/checkout@v2
+        if: ${{ github.event_name == 'pull_request_target' }}
+        with:
+          # Need to specify the SHA of the head to identify the target.
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Restore cache for root deps
+        uses: sardine-ai/cache@v2
+        with:
+          path: .npm
+          key: ${{ runner.os }}-root-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-root-
+      - name: Restore cache for shared deps
+        uses: sardine-ai/cache@v2
+        with:
+          path: shared/.npm
+          key: ${{ runner.os }}-server-${{ hashFiles('shared/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-shared-
+      - name: Restore cache for server deps
+        uses: sardine-ai/cache@v2
+        with:
+          path: server/.npm
+          key: ${{ runner.os }}-server-${{ hashFiles('server/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-server-
+      - name: Restore cache for frontend deps
+        uses: sardine-ai/cache@v2
+        with:
+          path: frontend/.npm
+          key: ${{ runner.os }}-frontend-${{ hashFiles('frontend/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-frontend-
+      - name: npm ci for root deps
+        run: |
+          npm ci --cache .npm --prefer-offline
+      - name: Make sure files are prettified using prettier
+        run: |
+          npm run format
+          echo $(git status -s)
+          if [[ $(git status -s) ]]; then
+            echo "Looks like you forgot to run 'npm run format'. Have you format the code before pushing?"
+            echo "You might have forgotten to run prettier. please make sure you setup husky hook"
+            git diff
+            exit 1 
+          fi
+      - name: Build shared
+        run: |
+          cd shared
+          npm ci --cache .npm --prefer-offline --production
+          npm run build
+      - name: npm ci for server
+        run: |
+          cd server
+          npm ci --cache .npm --prefer-offline --production
+          npm link ../shared
+      - name: Build server
+        run: |
+          cd server
+          npm run build
+      - name: Test server
+        run: |
+          cd server
+          npm run test
+      - name: npm ci for frontend
+        run: |
+          cd frontend
+          npm ci --cache .npm --prefer-offline --production
+          npm link ../shared
+      - name: Build frontend
+        run: |
+          cd frontend
+          npm run build
+        env:
+          NODE_OPTIONS: --max-old-space-size=8048
+      - name: Test frontend
+        run: |
+          cd frontend
+          npm run test
+      - name: Set up GCP credentials
+        run: |
+          cd scripts
+          npm install
+          npm run convert-env-var-gcp-creds-base64-to-json
+        env:
+          # secrets.GCP_CREDS_BASE64 is a secret value set in the GitHub repo.
+          # secrets.GCP_CREDS_BASE64 is a base64 string converted from the JSON of GCP's service account, https://console.cloud.google.com/iam-admin/serviceaccounts/details/115049378738592286566?project=indigo-computer-272415
+          GCP_CREDS_BASE64: ${{ secrets.GCP_CREDS_BASE64 }}
+          GOOGLE_APPLICATION_CREDENTIALS: ../google-application-credentials.json
+      - name: Test running server with built frontend assets (This step must be done after building server and frontend)
+        # This GitHub Actions run is an example of a test failure run. https://github.com/sardine-ai/device-dashboard/runs/3834575280
+        # When the server failed to start serving, the port 4001 does not listen to a request and the step fails.
+        # kill -9 $(lsof -t -i:4001) is to stop the server after the test. The GitHub Actions step succeeds even without this command.
+        run: |
+          cd server
+          npm run start & npx wait-on http://localhost:4001 --timeout 5000
+          echo "If you see this, the previous test succeeded."
+          kill -9 $(lsof -t -i:4001)
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ../google-application-credentials.json
+          GOOGLE_CLOUD_PROJECT: indigo-computer-272415
+          NODE_ENV: staging

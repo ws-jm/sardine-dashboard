@@ -1,0 +1,12 @@
+.npm
+dist
+
+node_modules/
+server/api/search/dataset.json
+frontend/.env
+server/dist/
+.DS_Store
+frontend/.eslintcache
+
+idea
+.idea

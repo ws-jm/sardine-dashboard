@@ -1,0 +1,16 @@
+{
+  "name": "sardine-dashboard-scripts",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "convert-env-var-gcp-creds-base64-to-json": "npx ts-node convert-env-var-gcp-creds-base64-to-json.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^16.10.3",
+    "ts-node": "^10.2.1",
+    "typescript": "^4.4.3"
+  }
+}

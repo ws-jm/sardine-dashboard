@@ -1,0 +1,34 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "server"
+    schedule:
+      interval: "monthly"
+    reviewers:
+      - "ranger-suhail"
+      - "sriharshaj"
+      - "katryo"
+  - package-ecosystem: "npm"
+    directory: "frontend"
+    schedule:
+      interval: "monthly"
+    reviewers:
+      - "ranger-suhail"
+      - "sriharshaj"
+      - "katryo"
+  - package-ecosystem: "docker"
+    directory: "deployments/dockerfiles/api"
+    schedule:
+      interval: "monthly"
+    reviewers:
+      - "ranger-suhail"
+      - "sriharshaj"
+      - "katryo"
+  - package-ecosystem: "docker"
+    directory: "deployments/dockerfiles/frontend"
+    schedule:
+      interval: "monthly"
+    reviewers:
+      - "ranger-suhail"
+      - "sriharshaj"
+      - "katryo"

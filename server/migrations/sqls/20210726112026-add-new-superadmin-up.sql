@@ -1,0 +1,1 @@
+INSERT INTO superadmin_emails (email) VALUES ('olga@sardine.ai');

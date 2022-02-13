@@ -1,0 +1,1 @@
+ALTER TABLE invitation_tokens ADD email varchar(255);
